@@ -18,9 +18,19 @@ async function handler(req, res) {
     res.status(422).json({ message: '无效输入-密码至少要7位数' })
     return
   }
-  const hashedPassword = await hashPassword(password)
+
   const client = await connectToDatabase()
   const db = client.db()
+
+  //验证用户是否已经注册
+  const existingUser = await db.collection('users').findOne({ email: email })
+  if (existingUser) {
+    res.status(422).json({ message: '用户已被注册！' })
+    client.close()
+    return
+  }
+  const hashedPassword = await hashPassword(password)
+  //添加新用户到数据库
   const result = await db
     .collection('users')
     .insertOne({ email: email, password: hashedPassword })
