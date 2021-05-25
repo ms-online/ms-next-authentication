@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import classes from './auth-form.module.css'
+import { signIn } from 'next-auth/client'
 //前端发起请求（注册用户）
 async function createUser(email, password) {
   const response = await fetch('/api/auth/signup', {
@@ -34,6 +35,16 @@ function AuthForm() {
     const enteredPassword = passwordInputRef.current.value
 
     if (isLogin) {
+      //用户登录
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: enteredEmail,
+        password: enteredPassword,
+      })
+      console.log(result)
+      if (!result.error) {
+        //设置身份验证的状态
+      }
     } else {
       //创建新用户
       try {
