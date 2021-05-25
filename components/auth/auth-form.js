@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/router'
 import classes from './auth-form.module.css'
 import { signIn } from 'next-auth/client'
 //前端发起请求（注册用户）
@@ -20,6 +21,7 @@ async function createUser(email, password) {
 function AuthForm() {
   const emailInputRef = useRef()
   const passwordInputRef = useRef()
+  const router = useRouter()
 
   const [isLogin, setIsLogin] = useState(true)
 
@@ -43,7 +45,8 @@ function AuthForm() {
       })
       console.log(result)
       if (!result.error) {
-        //设置身份验证的状态
+        //验证成功
+        router.replace('/profile')
       }
     } else {
       //创建新用户

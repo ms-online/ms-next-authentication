@@ -1,7 +1,28 @@
-import AuthForm from '../components/auth/auth-form';
+import { getSession } from 'next-auth/client'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import AuthForm from '../components/auth/auth-form'
 
 function AuthPage() {
-  return <AuthForm />;
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+  useEffect(
+    () =>
+      getSession().then((session) => {
+        if (session) {
+          //重定向到主页
+          router.replace('/')
+        } else {
+          setIsLoading(false)
+        }
+      }),
+    []
+  )
+
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
+  return <AuthForm />
 }
 
-export default AuthPage;
+export default AuthPage
